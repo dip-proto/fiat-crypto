@@ -44,13 +44,15 @@ jobs:
         set -e
         git clone https://github.com/coq/coq.git --branch=${COQ_VERSION}
         eval $(opam env)
+        export env DYLD_LIBRARY_PATH="/usr/local/lib/ocaml/stublibs"
         (cd coq && git log -1)
         (cd coq && ./configure -prefix /usr/local/ -warn-error yes -native-compiler no -coqide opt)
-        (export env DYLD_LIBRARY_PATH="/usr/local/lib/ocaml/stublibs" ; cd coq && make -j "$NJOBS" && dune build coq-core.install)
+        (cd coq && make -j "$NJOBS" && dune build coq-core.install)
 
     - name: Install Coq
       run: |
         eval $(opam env)
+        export env DYLD_LIBRARY_PATH="/usr/local/lib/ocaml/stublibs"
         (cd coq && sudo make install)
 
     - name: echo build params
